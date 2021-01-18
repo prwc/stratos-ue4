@@ -81,6 +81,8 @@ void AStratosCharacter::SetupPlayerInputComponent(class UInputComponent *PlayerI
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AStratosCharacter::OnResetVR);
 
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &AStratosCharacter::Dash);
+
+	PlayerInputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &AStratosCharacter::Shoot);
 }
 
 void AStratosCharacter::OnResetVR()
@@ -114,6 +116,11 @@ void AStratosCharacter::Dash()
 	{
 		Booster->Start();
 	}
+}
+
+void AStratosCharacter::Shoot()
+{
+	Booster->Shoot();
 }
 
 void AStratosCharacter::TurnAtRate(float Rate)

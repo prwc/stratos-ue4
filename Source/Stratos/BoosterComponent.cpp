@@ -26,6 +26,7 @@ void UBoosterComponent::Start()
 		GetWorld()->GetTimerManager().SetTimer(DashTimer, this, &UBoosterComponent::Stop, BoostTime, false);
 		Character->GetCharacterMovement()->MaxWalkSpeed *= SpeedMultiplier;
 		bIsDashing = true;
+		bIsLocking = false;
 	}
 }
 
@@ -36,12 +37,26 @@ void UBoosterComponent::Stop()
 		GetWorld()->GetTimerManager().ClearTimer(DashTimer);
 		Character->GetCharacterMovement()->MaxWalkSpeed /= SpeedMultiplier;
 		bIsDashing = false;
+		bIsLocking = false;
+	}
+}
+
+void UBoosterComponent::Shoot()
+{
+	if (IsDashing())
+	{
+		bIsLocking = true;
 	}
 }
 
 bool UBoosterComponent::IsDashing() const
 {
 	return bIsDashing;
+}
+
+bool UBoosterComponent::IsLocking() const
+{
+	return bIsLocking;
 }
 
 // Called when the game starts
@@ -55,9 +70,4 @@ void UBoosterComponent::BeginPlay()
 void UBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (IsDashing())
-	{
-		Character->AddMovementInput(Direction, 1.0f);
-	}
 }

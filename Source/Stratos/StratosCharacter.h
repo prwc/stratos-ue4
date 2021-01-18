@@ -74,4 +74,5 @@ public:
 
 private:
 	void Dash();
+	void Shoot();
 };

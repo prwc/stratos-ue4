@@ -19,9 +19,16 @@ public:
 
 	void Start();
 	void Stop();
+	void Shoot();
 
 	UFUNCTION(BlueprintCallable)
 	bool IsDashing() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool IsLocking() const;
+
+	UFUNCTION(BlueprintPure)
+	FVector GetDashDirection() { return Direction; }
 
 protected:
 	// Called when the game starts
@@ -40,6 +47,7 @@ public:
 private:
 	class ACharacter *Character;
 	bool bIsDashing = false;
+	bool bIsLocking = false;
 	FTimerHandle DashTimer;
 	FVector Direction;
 };
