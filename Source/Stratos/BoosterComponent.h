@@ -19,6 +19,8 @@ public:
 
 	void Start();
 	void Stop();
+
+	UFUNCTION(BlueprintCallable)
 	bool IsDashing() const;
 
 protected:
