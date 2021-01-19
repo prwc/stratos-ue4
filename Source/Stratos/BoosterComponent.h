@@ -27,8 +27,28 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsLocking() const;
 
+	UFUNCTION(BlueprintCallable)
+	void LerpRotatorToController(float lerpValue);
+
 	UFUNCTION(BlueprintPure)
 	FVector GetDashDirection() { return Direction; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpeedMultiplier = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoostTime = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float NormalShootTime = 1.0f;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNormalShootDelegate);
+	UPROPERTY(BlueprintAssignable)
+	FNormalShootDelegate OnNormalShootEvent;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDashShootDelegate);
+	UPROPERTY(BlueprintAssignable)
+	FDashShootDelegate OnDashShootEvent;
 
 protected:
 	// Called when the game starts
@@ -38,16 +58,15 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float SpeedMultiplier = 1.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BoostTime = 1.0f;
-
 private:
+	void UnblockNormalShoot();
+
 	class ACharacter *Character;
 	bool bIsDashing = false;
 	bool bIsLocking = false;
+	bool bNormalShootBlocking = false;
+	bool bDashShootBlocking = false;
 	FTimerHandle DashTimer;
 	FVector Direction;
+	FTimerHandle NormalShootBlockingTimer;
 };

@@ -70,8 +70,6 @@ void AStratosCharacter::SetupPlayerInputComponent(class UInputComponent *PlayerI
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AStratosCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &AStratosCharacter::LookUpAtRate);
 
 	// handle touch devices
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &AStratosCharacter::TouchStarted);
@@ -129,14 +127,13 @@ void AStratosCharacter::TurnAtRate(float Rate)
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
-void AStratosCharacter::LookUpAtRate(float Rate)
-{
-	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-}
-
 void AStratosCharacter::MoveForward(float Value)
 {
+	if (Booster->IsDashing())
+	{
+		return;
+	}
+
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is forward
@@ -151,6 +148,11 @@ void AStratosCharacter::MoveForward(float Value)
 
 void AStratosCharacter::MoveRight(float Value)
 {
+	if (Booster->IsDashing())
+	{
+		return;
+	}
+
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right

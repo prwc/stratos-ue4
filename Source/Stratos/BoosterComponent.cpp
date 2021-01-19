@@ -5,6 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/Controller.h"
 
 // Sets default values for this component's properties
 UBoosterComponent::UBoosterComponent()
@@ -38,6 +40,7 @@ void UBoosterComponent::Stop()
 		Character->GetCharacterMovement()->MaxWalkSpeed /= SpeedMultiplier;
 		bIsDashing = false;
 		bIsLocking = false;
+		bDashShootBlocking = false;
 	}
 }
 
@@ -46,6 +49,14 @@ void UBoosterComponent::Shoot()
 	if (IsDashing())
 	{
 		bIsLocking = true;
+		bDashShootBlocking = true;
+		OnDashShootEvent.Broadcast();
+	}
+	else if (!bNormalShootBlocking)
+	{
+		bNormalShootBlocking = true;
+		GetWorld()->GetTimerManager().SetTimer(NormalShootBlockingTimer, this, &UBoosterComponent::UnblockNormalShoot, NormalShootTime, false);
+		OnNormalShootEvent.Broadcast();
 	}
 }
 
@@ -70,4 +81,24 @@ void UBoosterComponent::BeginPlay()
 void UBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (IsDashing())
+	{
+		Character->AddMovementInput(Direction);
+	}
+	else if (Character->GetVelocity().Size() <= 0)
+	{
+		LerpRotatorToController(0.1f);
+	}
+}
+
+void UBoosterComponent::UnblockNormalShoot()
+{
+	bNormalShootBlocking = false;
+}
+
+void UBoosterComponent::LerpRotatorToController(float lerpValue)
+{
+	FRotator newRotator = FMath::Lerp(Character->GetActorRotation(), Character->GetController()->GetControlRotation(), lerpValue);
+	Character->SetActorRotation(newRotator);
 }
