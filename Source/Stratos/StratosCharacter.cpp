@@ -52,7 +52,7 @@ AStratosCharacter::AStratosCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
-void AStratosCharacter::BeginPlay() 
+void AStratosCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	Health = MaxHealth;
@@ -87,6 +87,13 @@ void AStratosCharacter::SetupPlayerInputComponent(class UInputComponent *PlayerI
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &AStratosCharacter::Dash);
 
 	PlayerInputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &AStratosCharacter::Shoot);
+}
+
+float AStratosCharacter::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)
+{
+	float TakenDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	Health = FMath::Clamp<float>(Health - TakenDamage, 0, MaxHealth);
+	return TakenDamage;
 }
 
 void AStratosCharacter::OnResetVR()

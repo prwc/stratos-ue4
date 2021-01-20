@@ -60,6 +60,7 @@ public:
 
 private:
 	void UnblockNormalShoot();
+	void LookAtEnemy(float lerpValue);
 
 	class ACharacter *Character;
 	bool bIsDashing = false;

@@ -7,6 +7,7 @@
 #include "TimerManager.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/Controller.h"
+#include "StartosPlayerController.h"
 
 // Sets default values for this component's properties
 UBoosterComponent::UBoosterComponent()
@@ -90,11 +91,31 @@ void UBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	{
 		LerpRotatorToController(0.1f);
 	}
+
+	if (IsLocking())
+	{
+		LookAtEnemy(0.5f);
+	}
 }
 
 void UBoosterComponent::UnblockNormalShoot()
 {
 	bNormalShootBlocking = false;
+}
+
+void UBoosterComponent::LookAtEnemy(float lerpValue)
+{
+	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
+	if (StartosController != nullptr)
+	{
+		APawn *Enemy = StartosController->Enemy;
+		FRotator NewRotation = StartosController->GetControlRotation();
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Enemy->GetActorLocation());
+		FRotator LerpRotation = FMath::Lerp(NewRotation, LookAtRotation, lerpValue);
+		NewRotation.Yaw = LerpRotation.Yaw;
+		StartosController->SetControlRotation(NewRotation);
+		LerpRotatorToController(lerpValue);
+	}
 }
 
 void UBoosterComponent::LerpRotatorToController(float lerpValue)
