@@ -52,6 +52,12 @@ AStratosCharacter::AStratosCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+void AStratosCharacter::BeginPlay() 
+{
+	Super::BeginPlay();
+	Health = MaxHealth;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

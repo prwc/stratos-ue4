@@ -22,8 +22,16 @@ class AStratosCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	class UBoosterComponent *Booster;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Status, meta = (AllowPrivateAccess = "true"))
+	float MaxHealth;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Status, meta = (AllowPrivateAccess = "true"))
+	float Health;
+
 public:
 	AStratosCharacter();
+
+	virtual void BeginPlay() override;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
