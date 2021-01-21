@@ -89,16 +89,23 @@ void UBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	}
 	else if (Character->GetVelocity().Size() <= 0)
 	{
-		LerpRotatorToController(0.1f);
+		LerpCharacterToController(0.1f);
 	}
 
 	if (Character->GetVelocity().Z != 0.0f)
 	{
-		LookAtEnemy(1.0f);
+		LerpControllerToEnemy(1.0f);
+		LerpCharacterToController(1.0f);
 	}
 	else if (IsLocking())
 	{
-		LookAtEnemy(0.5f);
+		LerpControllerToEnemy(0.5f);
+		LerpCharacterToController(1.0f);
+	}
+
+	if(IsShooting())
+	{
+		LerpCharacterToEnemy(1.0f);
 	}
 }
 
@@ -107,7 +114,7 @@ void UBoosterComponent::UnblockNormalShoot()
 	bNormalShootBlocking = false;
 }
 
-void UBoosterComponent::LookAtEnemy(float lerpValue)
+void UBoosterComponent::LerpControllerToEnemy(float lerpValue)
 {
 	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
 	if (StartosController != nullptr)
@@ -118,11 +125,24 @@ void UBoosterComponent::LookAtEnemy(float lerpValue)
 		FRotator LerpRotation = FMath::Lerp(NewRotation, LookAtRotation, lerpValue);
 		NewRotation.Yaw = LerpRotation.Yaw;
 		StartosController->SetControlRotation(NewRotation);
-		LerpRotatorToController(lerpValue);
 	}
 }
 
-void UBoosterComponent::LerpRotatorToController(float lerpValue)
+void UBoosterComponent::LerpCharacterToEnemy(float lerpValue)
+{
+	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
+	if (StartosController != nullptr)
+	{
+		APawn *Enemy = StartosController->Enemy;
+		FRotator NewRotation = StartosController->GetControlRotation();
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Enemy->GetActorLocation());
+		FRotator LerpRotation = FMath::Lerp(NewRotation, LookAtRotation, lerpValue);
+		NewRotation.Yaw = LerpRotation.Yaw;
+		Character->SetActorRotation(NewRotation);
+	}
+}
+
+void UBoosterComponent::LerpCharacterToController(float lerpValue)
 {
 	FRotator newRotator = FMath::Lerp(Character->GetActorRotation(), Character->GetController()->GetControlRotation(), lerpValue);
 	Character->SetActorRotation(newRotator);

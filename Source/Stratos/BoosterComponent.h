@@ -27,9 +27,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsLocking() const;
 
-	UFUNCTION(BlueprintCallable)
-	void LerpRotatorToController(float lerpValue);
-
 	UFUNCTION(BlueprintPure)
 	FVector GetDashDirection() { return Direction; }
 
@@ -63,7 +60,9 @@ public:
 
 private:
 	void UnblockNormalShoot();
-	void LookAtEnemy(float lerpValue);
+	void LerpControllerToEnemy(float lerpValue);
+	void LerpCharacterToEnemy(float lerpValue);
+	void LerpCharacterToController(float lerpValue);
 
 	class ACharacter *Character;
 	bool bIsDashing = false;
