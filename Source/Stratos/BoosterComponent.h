@@ -50,6 +50,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FDashShootDelegate OnDashShootEvent;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsShooting() const;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

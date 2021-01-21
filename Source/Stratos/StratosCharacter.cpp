@@ -65,7 +65,7 @@ void AStratosCharacter::SetupPlayerInputComponent(class UInputComponent *PlayerI
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AStratosCharacter::JumpAction);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AStratosCharacter::MoveForward);
@@ -76,10 +76,6 @@ void AStratosCharacter::SetupPlayerInputComponent(class UInputComponent *PlayerI
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AStratosCharacter::TurnAtRate);
-
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &AStratosCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &AStratosCharacter::TouchStopped);
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AStratosCharacter::OnResetVR);
@@ -107,16 +103,6 @@ void AStratosCharacter::OnResetVR()
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
-void AStratosCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	Jump();
-}
-
-void AStratosCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	StopJumping();
-}
-
 void AStratosCharacter::Dash()
 {
 	if (Booster->IsDashing())
@@ -134,6 +120,19 @@ void AStratosCharacter::Shoot()
 	Booster->Shoot();
 }
 
+void AStratosCharacter::JumpAction()
+{
+	if (GetVelocity().Z != 0.0f)
+	{
+		GetCharacterMovement()->GravityScale = 10;
+	}
+	else
+	{
+		GetCharacterMovement()->GravityScale = 1;
+		Jump();
+	}
+}
+
 void AStratosCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
@@ -142,7 +141,7 @@ void AStratosCharacter::TurnAtRate(float Rate)
 
 void AStratosCharacter::MoveForward(float Value)
 {
-	if (Booster->IsDashing())
+	if (Booster->IsShooting() || Booster->IsDashing())
 	{
 		return;
 	}
@@ -161,7 +160,7 @@ void AStratosCharacter::MoveForward(float Value)
 
 void AStratosCharacter::MoveRight(float Value)
 {
-	if (Booster->IsDashing())
+	if (Booster->IsShooting() || Booster->IsDashing())
 	{
 		return;
 	}

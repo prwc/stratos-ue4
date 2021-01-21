@@ -92,7 +92,11 @@ void UBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		LerpRotatorToController(0.1f);
 	}
 
-	if (IsLocking())
+	if (Character->GetVelocity().Z != 0.0f)
+	{
+		LookAtEnemy(1.0f);
+	}
+	else if (IsLocking())
 	{
 		LookAtEnemy(0.5f);
 	}
@@ -122,4 +126,9 @@ void UBoosterComponent::LerpRotatorToController(float lerpValue)
 {
 	FRotator newRotator = FMath::Lerp(Character->GetActorRotation(), Character->GetController()->GetControlRotation(), lerpValue);
 	Character->SetActorRotation(newRotator);
+}
+
+bool UBoosterComponent::IsShooting() const
+{
+	return bNormalShootBlocking;
 }
