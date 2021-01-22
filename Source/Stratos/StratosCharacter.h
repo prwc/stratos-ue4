@@ -72,6 +72,9 @@ public:
 
 private:
 	void Dash();
-	void Shoot();
+
+	UFUNCTION(Server, Reliable)
+	void ServerShoot();
+
 	void JumpAction();
 };

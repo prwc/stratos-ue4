@@ -82,7 +82,7 @@ void AStratosCharacter::SetupPlayerInputComponent(class UInputComponent *PlayerI
 
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &AStratosCharacter::Dash);
 
-	PlayerInputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &AStratosCharacter::Shoot);
+	PlayerInputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &AStratosCharacter::ServerShoot);
 }
 
 float AStratosCharacter::TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)
@@ -115,7 +115,7 @@ void AStratosCharacter::Dash()
 	}
 }
 
-void AStratosCharacter::Shoot()
+void AStratosCharacter::ServerShoot_Implementation()
 {
 	Booster->Shoot();
 }

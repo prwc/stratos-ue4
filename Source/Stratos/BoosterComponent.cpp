@@ -103,7 +103,7 @@ void UBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		LerpCharacterToController(1.0f);
 	}
 
-	if(IsShooting())
+	if (IsShooting())
 	{
 		LerpCharacterToEnemy(1.0f);
 	}
@@ -117,7 +117,7 @@ void UBoosterComponent::UnblockNormalShoot()
 void UBoosterComponent::LerpControllerToEnemy(float lerpValue)
 {
 	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
-	if (StartosController != nullptr)
+	if (StartosController != nullptr && StartosController->Enemy != nullptr)
 	{
 		APawn *Enemy = StartosController->Enemy;
 		FRotator NewRotation = StartosController->GetControlRotation();
@@ -131,7 +131,7 @@ void UBoosterComponent::LerpControllerToEnemy(float lerpValue)
 void UBoosterComponent::LerpCharacterToEnemy(float lerpValue)
 {
 	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
-	if (StartosController != nullptr)
+	if (StartosController != nullptr && StartosController->Enemy != nullptr)
 	{
 		APawn *Enemy = StartosController->Enemy;
 		FRotator NewRotation = StartosController->GetControlRotation();
@@ -144,8 +144,11 @@ void UBoosterComponent::LerpCharacterToEnemy(float lerpValue)
 
 void UBoosterComponent::LerpCharacterToController(float lerpValue)
 {
-	FRotator newRotator = FMath::Lerp(Character->GetActorRotation(), Character->GetController()->GetControlRotation(), lerpValue);
-	Character->SetActorRotation(newRotator);
+	if (Character->GetController() != nullptr)
+	{
+		FRotator newRotator = FMath::Lerp(Character->GetActorRotation(), Character->GetController()->GetControlRotation(), lerpValue);
+		Character->SetActorRotation(newRotator);
+	}
 }
 
 bool UBoosterComponent::IsShooting() const
