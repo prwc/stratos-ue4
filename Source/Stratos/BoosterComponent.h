@@ -79,5 +79,11 @@ private:
 	UPROPERTY(Replicated)
 	FVector Direction;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastNormalShoot();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastDashShoot();
+
 	FTimerHandle NormalShootBlockingTimer;
 };

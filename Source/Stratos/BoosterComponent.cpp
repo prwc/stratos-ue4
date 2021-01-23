@@ -52,13 +52,13 @@ void UBoosterComponent::Shoot()
 	{
 		bIsLocking = true;
 		bDashShootBlocking = true;
-		OnDashShootEvent.Broadcast();
+		MulticastDashShoot();
 	}
 	else if (!bNormalShootBlocking)
 	{
 		bNormalShootBlocking = true;
 		GetWorld()->GetTimerManager().SetTimer(NormalShootBlockingTimer, this, &UBoosterComponent::UnblockNormalShoot, NormalShootTime, false);
-		OnNormalShootEvent.Broadcast();
+		MulticastNormalShoot();
 	}
 }
 
@@ -150,6 +150,16 @@ void UBoosterComponent::LerpCharacterToController(float lerpValue)
 		FRotator newRotator = FMath::Lerp(Character->GetActorRotation(), Character->GetController()->GetControlRotation(), lerpValue);
 		Character->SetActorRotation(newRotator);
 	}
+}
+
+void UBoosterComponent::MulticastDashShoot_Implementation() 
+{
+	OnDashShootEvent.Broadcast();
+}
+
+void UBoosterComponent::MulticastNormalShoot_Implementation() 
+{
+	OnNormalShootEvent.Broadcast();
 }
 
 bool UBoosterComponent::IsShooting() const
