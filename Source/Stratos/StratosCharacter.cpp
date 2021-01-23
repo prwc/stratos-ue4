@@ -11,6 +11,7 @@
 #include "TimerManager.h"
 #include "Engine/World.h"
 #include "BoosterComponent.h"
+#include "Net/UnrealNetwork.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AStratosCharacter
@@ -177,4 +178,10 @@ void AStratosCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AStratosCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AStratosCharacter, Health);
 }

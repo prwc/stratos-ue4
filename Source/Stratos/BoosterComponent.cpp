@@ -48,17 +48,21 @@ void UBoosterComponent::Stop()
 
 void UBoosterComponent::Shoot()
 {
-	if (IsDashing())
+	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
+	if (StartosController != nullptr && StartosController->Enemy != nullptr)
 	{
-		bIsLocking = true;
-		bDashShootBlocking = true;
-		MulticastDashShoot();
-	}
-	else if (!bNormalShootBlocking)
-	{
-		bNormalShootBlocking = true;
-		GetWorld()->GetTimerManager().SetTimer(NormalShootBlockingTimer, this, &UBoosterComponent::UnblockNormalShoot, NormalShootTime, false);
-		MulticastNormalShoot();
+		if (IsDashing())
+		{
+			bIsLocking = true;
+			bDashShootBlocking = true;
+			MulticastDashShoot(StartosController->Enemy->GetActorLocation());
+		}
+		else if (!bNormalShootBlocking)
+		{
+			bNormalShootBlocking = true;
+			GetWorld()->GetTimerManager().SetTimer(NormalShootBlockingTimer, this, &UBoosterComponent::UnblockNormalShoot, NormalShootTime, false);
+			MulticastNormalShoot(StartosController->Enemy->GetActorLocation());
+		}
 	}
 }
 
@@ -152,14 +156,14 @@ void UBoosterComponent::LerpCharacterToController(float lerpValue)
 	}
 }
 
-void UBoosterComponent::MulticastDashShoot_Implementation() 
+void UBoosterComponent::MulticastDashShoot_Implementation(FVector TargetLocation) 
 {
-	OnDashShootEvent.Broadcast();
+	OnDashShootEvent.Broadcast(TargetLocation);
 }
 
-void UBoosterComponent::MulticastNormalShoot_Implementation() 
+void UBoosterComponent::MulticastNormalShoot_Implementation(FVector TargetLocation) 
 {
-	OnNormalShootEvent.Broadcast();
+	OnNormalShootEvent.Broadcast(TargetLocation);
 }
 
 bool UBoosterComponent::IsShooting() const

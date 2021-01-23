@@ -25,7 +25,7 @@ class AStratosCharacter : public ACharacter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Status, meta = (AllowPrivateAccess = "true"))
 	float MaxHealth;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Status, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, meta = (AllowPrivateAccess = "true"), Replicated)
 	float Health;
 
 public:

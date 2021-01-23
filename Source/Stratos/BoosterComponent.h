@@ -39,11 +39,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float NormalShootTime = 1.0f;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNormalShootDelegate);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNormalShootDelegate, FVector, TargetLocation);
 	UPROPERTY(BlueprintAssignable)
 	FNormalShootDelegate OnNormalShootEvent;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDashShootDelegate);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDashShootDelegate, FVector, TargetLocation);
 	UPROPERTY(BlueprintAssignable)
 	FDashShootDelegate OnDashShootEvent;
 
@@ -80,10 +80,10 @@ private:
 	FVector Direction;
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastNormalShoot();
+	void MulticastNormalShoot(FVector TargetLocation);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastDashShoot();
+	void MulticastDashShoot(FVector TargetLocation);
 
 	FTimerHandle NormalShootBlockingTimer;
 };
