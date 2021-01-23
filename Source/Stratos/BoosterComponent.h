@@ -65,11 +65,19 @@ private:
 	void LerpCharacterToController(float lerpValue);
 
 	class ACharacter *Character;
-	bool bIsDashing = false;
-	bool bIsLocking = false;
+
 	bool bNormalShootBlocking = false;
 	bool bDashShootBlocking = false;
 	FTimerHandle DashTimer;
+
+	UPROPERTY(Replicated)
+	bool bIsDashing = false;
+
+	UPROPERTY(Replicated)
+	bool bIsLocking = false;
+
+	UPROPERTY(Replicated)
 	FVector Direction;
+
 	FTimerHandle NormalShootBlockingTimer;
 };

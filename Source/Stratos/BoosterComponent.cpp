@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/Controller.h"
 #include "StartosPlayerController.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UBoosterComponent::UBoosterComponent()
@@ -154,4 +155,12 @@ void UBoosterComponent::LerpCharacterToController(float lerpValue)
 bool UBoosterComponent::IsShooting() const
 {
 	return bNormalShootBlocking;
+}
+
+void UBoosterComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UBoosterComponent, bIsDashing);
+	DOREPLIFETIME(UBoosterComponent, Direction);
+	DOREPLIFETIME(UBoosterComponent, bIsLocking);
 }

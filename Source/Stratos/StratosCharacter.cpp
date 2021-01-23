@@ -47,6 +47,7 @@ AStratosCharacter::AStratosCharacter()
 	FollowCamera->bUsePawnControlRotation = false;								// Camera does not rotate relative to arm
 
 	Booster = CreateDefaultSubobject<UBoosterComponent>(TEXT("Booster"));
+	Booster->SetIsReplicated(true);
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character)
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -80,7 +81,7 @@ void AStratosCharacter::SetupPlayerInputComponent(class UInputComponent *PlayerI
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AStratosCharacter::OnResetVR);
 
-	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &AStratosCharacter::Dash);
+	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &AStratosCharacter::ServerDash);
 
 	PlayerInputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &AStratosCharacter::ServerShoot);
 }
@@ -103,7 +104,7 @@ void AStratosCharacter::OnResetVR()
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
-void AStratosCharacter::Dash()
+void AStratosCharacter::ServerDash_Implementation()
 {
 	if (Booster->IsDashing())
 	{
