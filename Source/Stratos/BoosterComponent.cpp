@@ -54,8 +54,11 @@ void UBoosterComponent::Shoot()
 		if (IsDashing())
 		{
 			bIsLocking = true;
+			if(!bDashShootBlocking)
+			{
+				MulticastDashShoot(StartosController->Enemy->GetActorLocation());
+			}
 			bDashShootBlocking = true;
-			MulticastDashShoot(StartosController->Enemy->GetActorLocation());
 		}
 		else if (!bNormalShootBlocking)
 		{
@@ -94,23 +97,23 @@ void UBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	}
 	else if (Character->GetVelocity().Size() <= 0)
 	{
-		LerpCharacterToController(0.1f);
+		RotateCharacterToController(0.1f);
 	}
 
 	if (Character->GetVelocity().Z != 0.0f)
 	{
-		LerpControllerToEnemy(1.0f);
-		LerpCharacterToController(1.0f);
+		RotateControllerToEnemy(1.0f);
+		RotateCharacterToController(1.0f);
 	}
 	else if (IsLocking())
 	{
-		LerpControllerToEnemy(0.5f);
-		LerpCharacterToController(1.0f);
+		RotateControllerToEnemy(0.5f);
+		RotateCharacterToController(1.0f);
 	}
 
 	if (IsShooting())
 	{
-		LerpCharacterToEnemy(1.0f);
+		RotateCharacterToEnemy(1.0f);
 	}
 }
 
@@ -119,41 +122,42 @@ void UBoosterComponent::UnblockNormalShoot()
 	bNormalShootBlocking = false;
 }
 
-void UBoosterComponent::LerpControllerToEnemy(float lerpValue)
+void UBoosterComponent::RotateControllerToEnemy(float lerpValue)
 {
-	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
-	if (StartosController != nullptr && StartosController->Enemy != nullptr)
-	{
-		APawn *Enemy = StartosController->Enemy;
-		FRotator NewRotation = StartosController->GetControlRotation();
-		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Enemy->GetActorLocation());
-		FRotator LerpRotation = FMath::Lerp(NewRotation, LookAtRotation, lerpValue);
-		NewRotation.Yaw = LerpRotation.Yaw;
-		StartosController->SetControlRotation(NewRotation);
-	}
+	Character->GetController()->SetControlRotation(LerpControllerRotationToTarget(lerpValue));
 }
 
-void UBoosterComponent::LerpCharacterToEnemy(float lerpValue)
+void UBoosterComponent::RotateCharacterToEnemy(float lerpValue)
 {
-	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
-	if (StartosController != nullptr && StartosController->Enemy != nullptr)
-	{
-		APawn *Enemy = StartosController->Enemy;
-		FRotator NewRotation = StartosController->GetControlRotation();
-		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Enemy->GetActorLocation());
-		FRotator LerpRotation = FMath::Lerp(NewRotation, LookAtRotation, lerpValue);
-		NewRotation.Yaw = LerpRotation.Yaw;
-		Character->SetActorRotation(NewRotation);
-	}
+	Character->SetActorRotation(LerpControllerRotationToTarget(lerpValue));
 }
 
-void UBoosterComponent::LerpCharacterToController(float lerpValue)
+void UBoosterComponent::RotateCharacterToController(float lerpValue)
 {
 	if (Character->GetController() != nullptr)
 	{
 		FRotator newRotator = FMath::Lerp(Character->GetActorRotation(), Character->GetController()->GetControlRotation(), lerpValue);
 		Character->SetActorRotation(newRotator);
 	}
+}
+
+FVector UBoosterComponent::GetTargetLocation() const
+{
+	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
+	if (StartosController != nullptr && StartosController->Enemy != nullptr)
+	{
+		return StartosController->Enemy->GetActorLocation();
+	}
+	return Character->GetActorLocation() + Character->GetActorForwardVector();
+}
+
+FRotator UBoosterComponent::LerpControllerRotationToTarget(float lerpValue) const
+{
+	FRotator NewRotation = Character->GetController()->GetControlRotation();
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), GetTargetLocation());
+	FRotator LerpRotation = FMath::Lerp(NewRotation, LookAtRotation, lerpValue);
+	NewRotation.Yaw = LerpRotation.Yaw;
+	return NewRotation;
 }
 
 void UBoosterComponent::MulticastDashShoot_Implementation(FVector TargetLocation) 

@@ -60,9 +60,11 @@ public:
 
 private:
 	void UnblockNormalShoot();
-	void LerpControllerToEnemy(float lerpValue);
-	void LerpCharacterToEnemy(float lerpValue);
-	void LerpCharacterToController(float lerpValue);
+	void RotateControllerToEnemy(float lerpValue);
+	void RotateCharacterToEnemy(float lerpValue);
+	void RotateCharacterToController(float lerpValue);
+	FVector GetTargetLocation() const;
+	FRotator LerpControllerRotationToTarget(float lerpValue) const;
 
 	class ACharacter *Character;
 
