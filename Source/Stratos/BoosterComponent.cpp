@@ -25,6 +25,10 @@ void UBoosterComponent::Start()
 	if (!IsDashing())
 	{
 		FVector CurrentVelocity = Character->GetCharacterMovement()->Velocity;
+		if(CurrentVelocity.Size() <= 0)
+		{
+			CurrentVelocity = Character->GetActorForwardVector();
+		}
 		CurrentVelocity.Normalize();
 		Direction = CurrentVelocity;
 		GetWorld()->GetTimerManager().SetTimer(DashTimer, this, &UBoosterComponent::Stop, BoostTime, false);
