@@ -13,8 +13,4 @@ UCLASS()
 class STRATOS_API AStartosPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Replicated)
-	APawn *Enemy;
 };

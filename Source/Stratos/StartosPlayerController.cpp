@@ -1,10 +1,3 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "StartosPlayerController.h"
-#include "Net/UnrealNetwork.h"
-
-void AStartosPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
-{
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-    DOREPLIFETIME(AStartosPlayerController, Enemy);
-}

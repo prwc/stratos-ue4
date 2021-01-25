@@ -1,13 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BoosterComponent.h"
-#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "GameFramework/Controller.h"
-#include "StartosPlayerController.h"
+#include "StratosCharacter.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -52,15 +50,14 @@ void UBoosterComponent::Stop()
 
 void UBoosterComponent::Shoot()
 {
-	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
-	if (StartosController != nullptr && StartosController->Enemy != nullptr)
+	if (Character != nullptr && Character->Enemy != nullptr)
 	{
 		if (IsDashing())
 		{
 			bIsLocking = true;
 			if(!bDashShootBlocking)
 			{
-				MulticastDashShoot(StartosController->Enemy->GetActorLocation());
+				MulticastDashShoot(Character->Enemy->GetActorLocation());
 			}
 			bDashShootBlocking = true;
 		}
@@ -68,7 +65,7 @@ void UBoosterComponent::Shoot()
 		{
 			bNormalShootBlocking = true;
 			GetWorld()->GetTimerManager().SetTimer(NormalShootBlockingTimer, this, &UBoosterComponent::UnblockNormalShoot, NormalShootTime, false);
-			MulticastNormalShoot(StartosController->Enemy->GetActorLocation());
+			MulticastNormalShoot(Character->Enemy->GetActorLocation());
 		}
 	}
 }
@@ -87,7 +84,7 @@ bool UBoosterComponent::IsLocking() const
 void UBoosterComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	Character = Cast<ACharacter>(GetOwner());
+	Character = Cast<AStratosCharacter>(GetOwner());
 }
 
 // Called every frame
@@ -147,10 +144,9 @@ void UBoosterComponent::RotateCharacterToController(float lerpValue)
 
 FVector UBoosterComponent::GetTargetLocation() const
 {
-	AStartosPlayerController *StartosController = Cast<AStartosPlayerController>(Character->GetController());
-	if (StartosController != nullptr && StartosController->Enemy != nullptr)
+	if (Character != nullptr && Character->Enemy != nullptr)
 	{
-		return StartosController->Enemy->GetActorLocation();
+		return Character->Enemy->GetActorLocation();
 	}
 	return Character->GetActorLocation() + Character->GetActorForwardVector();
 }

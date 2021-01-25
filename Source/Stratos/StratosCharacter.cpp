@@ -190,4 +190,5 @@ void AStratosCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AStratosCharacter, Health);
+    DOREPLIFETIME(AStratosCharacter, Enemy);
 }

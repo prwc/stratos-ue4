@@ -66,7 +66,7 @@ private:
 	FVector GetTargetLocation() const;
 	FRotator LerpControllerRotationToTarget(float lerpValue) const;
 
-	class ACharacter *Character;
+	class AStratosCharacter *Character;
 
 	bool bNormalShootBlocking = false;
 	bool bDashShootBlocking = false;

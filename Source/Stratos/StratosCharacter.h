@@ -49,6 +49,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseLookUpRate;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Replicated)
+	APawn *Enemy;
+
 protected:
 	/** Resets HMD orientation in VR. */
 	void OnResetVR();
