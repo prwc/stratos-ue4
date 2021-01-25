@@ -124,8 +124,14 @@ void AStratosCharacter::ServerShoot_Implementation()
 
 void AStratosCharacter::JumpAction()
 {
+	if(Booster->IsDashing())
+	{
+		return;
+	}
+
 	if (GetVelocity().Z != 0.0f)
 	{
+		StopJumping();
 		GetCharacterMovement()->GravityScale = 10;
 	}
 	else
@@ -156,7 +162,7 @@ void AStratosCharacter::MoveForward(float Value)
 
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, FMath::RoundFromZero(Value));
 	}
 }
 
@@ -176,7 +182,7 @@ void AStratosCharacter::MoveRight(float Value)
 		// get right vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, FMath::RoundFromZero(Value));
 	}
 }
 
