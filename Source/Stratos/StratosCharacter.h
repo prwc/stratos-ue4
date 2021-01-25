@@ -33,6 +33,14 @@ public:
 
 	virtual void BeginPlay() override;
 
+	/** Called for forwards/backward input */
+	UFUNCTION(BlueprintCallable)
+	void MoveForward(float Value);
+
+	/** Called for side to side input */
+	UFUNCTION(BlueprintCallable)
+	void MoveRight(float Value);
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseTurnRate;
@@ -44,12 +52,6 @@ public:
 protected:
 	/** Resets HMD orientation in VR. */
 	void OnResetVR();
-
-	/** Called for forwards/backward input */
-	void MoveForward(float Value);
-
-	/** Called for side to side input */
-	void MoveRight(float Value);
 
 	/** 
 	 * Called via input to turn at a given rate. 
@@ -70,11 +72,10 @@ public:
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
 
-private:
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, BlueprintCallable, Reliable)
 	void ServerDash();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, BlueprintCallable, Reliable)
 	void ServerShoot();
 
 	void JumpAction();
