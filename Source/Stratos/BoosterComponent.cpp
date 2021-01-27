@@ -20,7 +20,7 @@ UBoosterComponent::UBoosterComponent()
 
 void UBoosterComponent::Start()
 {
-	if (!IsDashing())
+	if (!IsDashing() && !bDashShootCooldown)
 	{
 		FVector CurrentVelocity = Character->GetCharacterMovement()->Velocity;
 		if(CurrentVelocity.Size() <= 0)
@@ -45,6 +45,8 @@ void UBoosterComponent::Stop()
 		bIsDashing = false;
 		bIsLocking = false;
 		bDashShootBlocking = false;
+		bDashShootCooldown = true;
+		GetWorld()->GetTimerManager().SetTimer(DashCooldownTimer, this, &UBoosterComponent::ClearDashCooldown, BoostCooldownTime, false);
 	}
 }
 
@@ -158,6 +160,11 @@ FRotator UBoosterComponent::LerpControllerRotationToTarget(float lerpValue) cons
 	FRotator LerpRotation = FMath::Lerp(NewRotation, LookAtRotation, lerpValue);
 	NewRotation.Yaw = LerpRotation.Yaw;
 	return NewRotation;
+}
+
+void UBoosterComponent::ClearDashCooldown() 
+{
+	bDashShootCooldown = false;
 }
 
 void UBoosterComponent::MulticastDashShoot_Implementation(FVector TargetLocation) 

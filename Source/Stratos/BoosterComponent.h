@@ -39,6 +39,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float NormalShootTime = 1.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoostCooldownTime = 1.0f;
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNormalShootDelegate, FVector, TargetLocation);
 	UPROPERTY(BlueprintAssignable)
 	FNormalShootDelegate OnNormalShootEvent;
@@ -65,12 +68,16 @@ private:
 	void RotateCharacterToController(float lerpValue);
 	FVector GetTargetLocation() const;
 	FRotator LerpControllerRotationToTarget(float lerpValue) const;
+	void ClearDashCooldown();
 
 	class AStratosCharacter *Character;
 
 	bool bNormalShootBlocking = false;
 	bool bDashShootBlocking = false;
+	bool bDashShootCooldown = false;
+
 	FTimerHandle DashTimer;
+	FTimerHandle DashCooldownTimer;
 
 	UPROPERTY(Replicated)
 	bool bIsDashing = false;
