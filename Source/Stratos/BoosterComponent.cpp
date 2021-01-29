@@ -105,13 +105,13 @@ void UBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	if (Character->GetVelocity().Z != 0.0f)
 	{
-		RotateControllerToEnemy(1.0f);
+		RotateControllerToEnemy(0.5);
 		RotateCharacterToController(1.0f);
 	}
 	else if (IsLocking())
 	{
-		RotateControllerToEnemy(0.5f);
-		RotateCharacterToController(1.0f);
+		RotateControllerToEnemy(0.25f);
+		RotateCharacterToController(0.5f);
 	}
 
 	if (IsShooting())
@@ -180,6 +180,11 @@ void UBoosterComponent::MulticastNormalShoot_Implementation(FVector TargetLocati
 bool UBoosterComponent::IsShooting() const
 {
 	return bNormalShootBlocking;
+}
+
+bool UBoosterComponent::IsDashShooting() const
+{
+	return bDashShootBlocking;
 }
 
 void UBoosterComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

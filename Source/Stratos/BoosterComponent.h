@@ -53,6 +53,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsShooting() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsDashShooting() const;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
