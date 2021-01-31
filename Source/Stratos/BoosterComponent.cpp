@@ -187,6 +187,11 @@ bool UBoosterComponent::IsDashShooting() const
 	return bDashShootBlocking;
 }
 
+bool UBoosterComponent::CanDash() const
+{
+	return !bDashShootCooldown;
+}
+
 void UBoosterComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
